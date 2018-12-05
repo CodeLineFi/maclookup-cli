@@ -1,64 +1,70 @@
-# MAC address vendor lookup
+# MAC Address Vendor Lookup
 
-MAC lookup CLI allows you to retrieve information about MAC address or OUI 
-directly from your console. You can get a vendor's name and vendor's address.
-The list of all provided information is available on the API documentation 
-[page](https://macaddress.io/api-documentation).
+MAC lookup CLI allows you to retrieve information about a MAC address or OUI
+directly from your console including the vendor's name, address and other
+data.  
+The description of provided info is available in the API
+[documentation](https://macaddress.io/api-documentation).
 
-## Preparation
-
-To use this tool you need to create an account on [macaddress.io](https://macaddress.io/)
-On the site, you can get your API key. When these steps have been taken, 
-specify the key as an environment variable, something like this:
+## Installation
 
 ```bash
-export MAC_ADDRESS_IO_API_KEY="your-api-key"
+$ pip install maclookup-cli
 ```
 
-You can add this to your *.bash_profile* file:
+Specify the [-user](https://pip.pypa.io/en/stable/user_guide/#user-installs)
+flag if you want the installation to be specific to the current user.  
+In this case you'll have to make sure your **PATH** contains
+`~/Library/Python/<ver>/bin`
+([more info](https://gist.github.com/haircut/14705555d58432a5f01f9188006a04ed))
+for **macOS** and `%AppData%\Python\Python<version>\Scripts` for **Windows**.
+
+## API Key
+
+Using this tool requires signing up for a
+[macaddress.io](https://macaddress.io/) account and getting an API key
+[here](https://macaddress.io/account/general).  
+This key can either be specified via the `-k, --api-key` command option or
+the *MAC_ADDRESS_IO_API_KEY* environment variable:
+
+```bash
+# macOS and Linux
+export MAC_ADDRESS_IO_API_KEY="your-api-key"
+
+# Windows (CMD)
+set MAC_ADDRESS_IO_API_KEY="your-api-key"
+
+# Windows (PowerShell)
+$env:MAC_ADDRESS_IO_API_KEY="your-api-key"
+```
+
+You can add this to your *.bash_profile* for convenience:
 
 ```bash
 echo 'export MAC_ADDRESS_IO_API_KEY="your-api-key"' >> ~/.bash_profile
 ``` 
 
-## Get started
+## Getting Started
 
-Good! Now you are ready to start using command line tool for MAC vendor 
-lookups. Let's first start with the easiest example:
+```bash
+$ maclookup --help
+```
+
+### Basics
+
+Just feed a MAC address to the command:
 
 ```bash
 $ maclookup B8:C2:53:AC:DC:EF
-OUI: B8C253
-Is private: False
-Company name: Juniper Networks
-Company address: 1133 Innovation Way Sunnyvale  CA  94089 US
-Country code: US
-Left border: B8C2530000000000
-Right border: B8C253FFFFFFFFFF
-Block size: 1099511627776
-Assignment block size: MA-L
-Created at: 2018-10-26 00:00:00
-Updated at: 2018-10-26 00:00:00
-Transmission type: unicast
-Administration type: UAA
 ```
 
-As you can see, there is full info about the block of MAC addresses printed 
-to the standard output. Be careful, as the "Created at" means the date when 
-we got that block info for the first time. The "Updated at" refers to the 
-date when we got the last update for this block.
-
-
-May be you need to get info about multiple MAC addresses, let's consider the
-next example:
+This would print the complete information available for this address:
 
 ```bash
-$ maclookup -d B8:C2:53:AC:DC:EF 7C:60:4A:AA::3E:65
-------------------------
 OUI: B8C253
 Is private: False
 Company name: Juniper Networks
-Company address: 1133 Innovation Way Sunnyvale  CA  94089 US
+Company address: 1133 Innovation Way Sunnyvale CA 94089 US
 Country code: US
 Left border: B8C2530000000000
 Right border: B8C253FFFFFFFFFF
@@ -68,51 +74,49 @@ Created at: 2018-10-26 00:00:00
 Updated at: 2018-10-26 00:00:00
 Transmission type: unicast
 Administration type: UAA
-------------------------
-OUI: 7C604A
-Is private: False
-Company name: Avelon
-Company address: Bändliweg 20 Zurich    8048 CH
-Country code: CH
-Left border: 7C604A0000000000
-Right border: 7C604AFFFFFFFFFF
-Block size: 1099511627776
-Assignment block size: MA-L
-Created at: 2018-10-26 00:00:00
-Updated at: 2018-10-26 00:00:00
-Transmission type: unicast
-Administration type: UAA
-
 ```
 
-Take a look at this useful `-d` option. This option adds a string of dashes 
-before each block of information.
+### Multiple MACs
 
+A list of addresses can be used as well:
 
-Sometimes, you need to get just a vendor's name, which is possible by means 
-of the `maclookup` command. Just add two more options:
+```bash
+$ maclookup -d B8C253ACDCEF DC4A3ED930C6
+```
+
+```bash
+OUI: B8C253
+Is private: False
+Company name: Juniper Networks
+Company address: 1133 Innovation Way Sunnyvale CA 94089 US
+...
+------------------------
+OUI: DC4A3E
+Is private: False
+Company name: Hewlett Packard
+Company address: 11445 Compaq Center Drive Houston 77070 US
+...
+```
+
+The `-d` option separates info blocks with lines of dashes.
+
+### Controlling the Output
+
+You can limit the output to vendor names (`-V`) or MACs with vendors only (
+`-mV`):
 
 ```bash
 $ maclookup -V B8:C2:53:AC:DC:EF
 Juniper Networks
+```
+```bash
 $ maclookup -mV B8:C2:53:AC:DC:EF
 B8:C2:53:AC:DC:EF - Juniper Networks
 ```
 
-Now you are ready to use this tool in a wild world. For example, you may use 
-`maclookup` with `nmap`:
+### Input Files
 
-```bash
-$ sudo nmap -sn 172.28.128.0/24 | awk '/^MAC Address:/ {print $3;}' \
-> | maclookup -mV
-00:25:90:A4:8B:85 - Super Micro Computer, Inc
-0C:C4:7A:40:07:09 - Super Micro Computer, Inc
-0C:C4:7A:31:EF:8B - Super Micro Computer, Inc
-00:25:90:FC:7A:CF - Super Micro Computer, Inc
-00:25:90:2D:D4:01 - Super Micro Computer, Inc
-```
-
-or just a text file with one MAC address per line:
+A text file containing one MAC address per line can also be used:
 
 ```bash
 $ cat macs.txt 
@@ -120,6 +124,9 @@ C8:3A:35:5C:A6:80
 C4:0B:CB:19:1D:B0
 BC:EE:7B:73:04:42
 A4:17:31:79:1E:01
+```
+
+```bash
 $ cat macs.txt | maclookup -mV
 C8:3A:35:5C:A6:80 - Tenda Tech Co, Ltd
 C4:0B:CB:19:1D:B0 - Xiaomi Communications Co Ltd
@@ -127,22 +134,35 @@ BC:EE:7B:73:04:42 - ASUSTek Computer Inc
 A4:17:31:79:1E:01 - Hon Hai Precision Ind. Co, Ltd
 ```
 
-What if your text file contains too many lines? In this case, you need to use 
-the `-l` option to limit the number of MAC addresses to be processed.
+You can specify the `-l` option to limit the number of MAC addresses to be
+processed. The default value for this option is **100**. Use **0** to remove
+the limit.
 
 ```bash
 $ cat macs.txt | maclookup -mV -l 2
+```
+
+```bash
 C8:3A:35:5C:A6:80 - Tenda Tech Co, Ltd
 C4:0B:CB:19:1D:B0 - Xiaomi Communications Co Ltd
 ```
 
-The default value for this option is 100. You can use zero value to remove 
-the limit.
+### Advanced Example
 
+```bash
+$ sudo nmap -sn 172.28.128.0/24|awk '/^MAC Address:/{print $3;}'|maclookup -mV
+```
+```bash
+00:25:90:A4:8B:85 - Super Micro Computer, Inc
+0C:C4:7A:40:07:09 - Super Micro Computer, Inc
+0C:C4:7A:31:EF:8B - Super Micro Computer, Inc
+00:25:90:FC:7A:CF - Super Micro Computer, Inc
+00:25:90:2D:D4:01 - Super Micro Computer, Inc
+```
 
 ## Error codes
 
-You can use the following command to get the status code.
+Use the following to get the command's status code:
 
 ```bash
 $ echo $?

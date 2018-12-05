@@ -36,26 +36,26 @@ def print_full_info(model, original_mac, separator):
             sys.stdout.write(str('-' * 24) + os.linesep)
 
         if model.block_details.block_found is True:
-            sys.stdout.write("OUI: {}{}".format(str(model.vendor_details.oui), os.linesep))
-            sys.stdout.write("Is private: {}{}".format(str(model.vendor_details.is_private), os.linesep))
-            sys.stdout.write("Company name: {}{}".format(str(model.vendor_details.company_name), os.linesep))
-            sys.stdout.write("Company address: {}{}".format(str(model.vendor_details.company_address), os.linesep))
-            sys.stdout.write("Country code: {}{}".format(str(model.vendor_details.country_code), os.linesep))
-            sys.stdout.write("Left border: {}{}".format(str(model.block_details.border_left), os.linesep))
-            sys.stdout.write("Right border: {}{}".format(str(model.block_details.border_right), os.linesep))
-            sys.stdout.write("Block size: {}{}".format(str(model.block_details.block_size), os.linesep))
-            sys.stdout.write("Assignment block size: {}{}".format(
-                str(model.block_details.assignment_block_size),
+            sys.stdout.write(u"OUI: {}{}".format(get_str(model.vendor_details.oui), os.linesep))
+            sys.stdout.write(u"Is private: {}{}".format(get_str(model.vendor_details.is_private), os.linesep))
+            sys.stdout.write(u"Company name: {}{}".format(get_str(model.vendor_details.company_name), os.linesep))
+            sys.stdout.write(u"Company address: {}{}".format(get_str(model.vendor_details.company_address), os.linesep))
+            sys.stdout.write(u"Country code: {}{}".format(get_str(model.vendor_details.country_code), os.linesep))
+            sys.stdout.write(u"Left border: {}{}".format(get_str(model.block_details.border_left), os.linesep))
+            sys.stdout.write(u"Right border: {}{}".format(get_str(model.block_details.border_right), os.linesep))
+            sys.stdout.write(u"Block size: {}{}".format(get_str(model.block_details.block_size), os.linesep))
+            sys.stdout.write(u"Assignment block size: {}{}".format(
+                get_str(model.block_details.assignment_block_size),
                 os.linesep
             ))
-            sys.stdout.write("Created at: {}{}".format(str(model.block_details.date_created), os.linesep))
-            sys.stdout.write("Updated at: {}{}".format(str(model.block_details.date_updated), os.linesep))
-            sys.stdout.write("Transmission type: {}{}".format(
-                str(model.mac_address_details.transmission_type),
+            sys.stdout.write(u"Created at: {}{}".format(get_str(model.block_details.date_created), os.linesep))
+            sys.stdout.write(u"Updated at: {}{}".format(get_str(model.block_details.date_updated), os.linesep))
+            sys.stdout.write(u"Transmission type: {}{}".format(
+                get_str(model.mac_address_details.transmission_type),
                 os.linesep
             ))
-            sys.stdout.write("Administration type: {}{}".format(
-                str(model.mac_address_details.administration_type),
+            sys.stdout.write(u"Administration type: {}{}".format(
+                get_str(model.mac_address_details.administration_type),
                 os.linesep
             ))
         else:
@@ -82,7 +82,7 @@ def print_vendor(model, original_mac, separator, mac_with_vendor):
             sys.stdout.write("{} - ".format(original_mac.strip()))
 
         if model.block_details.block_found is True:
-            sys.stdout.write("{}{}".format(str(model.vendor_details.company_name), os.linesep))
+            sys.stdout.write(u"{}{}".format(get_str(model.vendor_details.company_name), os.linesep))
         else:
             sys.stdout.write("Not found" + os.linesep)
 
@@ -126,3 +126,12 @@ def make_request(mac, client):
     except Exception:
         print('{}: Unknown error'.format(mac))
         raise FatalError(127)
+
+
+def get_str(s):
+    # helper function for the python 2.x
+    try:
+        return unicode(s)
+    except NameError:
+        pass
+    return str(s)

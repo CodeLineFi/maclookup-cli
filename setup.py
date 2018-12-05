@@ -1,8 +1,9 @@
+from os.path import abspath, dirname, join, normpath
 from setuptools import setup
 
 setup(
     name='maclookup-cli',
-    version='0.1.6',
+    version='0.1.8',
     license='MIT',
     packages=['maclookupcli', 'maclookupcli.errors'],
     package_dir={
@@ -19,6 +20,7 @@ setup(
         maclookup=maclookupcli.command:cli
     ''',
     description='Console tool to make a MAC vendor lookups',
+    long_description=open(normpath(join(dirname(abspath(__file__)), "DESCRIPTION.rst"))).read(),
     author='CodeLine OY',
     author_email='support@macaddress.io',
     classifiers=[
