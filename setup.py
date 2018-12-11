@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='maclookup-cli',
-    version='0.1.8',
+    version='0.1.9',
     license='MIT',
     packages=['maclookupcli', 'maclookupcli.errors'],
     package_dir={

@@ -20,7 +20,7 @@ You can also perform a user installation via
 
 .. code-block:: console
 
-    $ pip install maclookup-cli —user
+    $ pip install maclookup-cli --user
 
 
 For user installs on macOS make sure ``~/Library/Python/<ver>/bin`` is in your
@@ -50,19 +50,19 @@ or the environment variable
 .. code-block:: console
 
     # macOS and Linux
-    $ export MAC_ADDRESS_IO_API_KEY=“your-api-key”
+    $ export MAC_ADDRESS_IO_API_KEY="your-api-key"
 
 
 .. code-block:: console
 
     # Windows (CMD)
-    set MAC_ADDRESS_IO_API_KEY=“your-api-key”
+    set MAC_ADDRESS_IO_API_KEY="your-api-key"
 
 
 .. code-block:: console
 
     # Windows (PowerShell)
-    $env:MAC_ADDRESS_IO_API_KEY=“your-api-key”
+    $env:MAC_ADDRESS_IO_API_KEY="your-api-key"
 
 
 Usage
@@ -70,7 +70,7 @@ Usage
 
 .. code-block:: console
 
-    $ maclookup —help
+    $ maclookup --help
 
 
 Documentation
